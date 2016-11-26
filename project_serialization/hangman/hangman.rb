@@ -1,22 +1,49 @@
 # Hangman.rb -- Hangman game written in Ruby
+require 'json'
 
 class Hangman
+  attr_accessor :word, :player_work, :chars_guessed, :guesses_left
 
   def initialize
     word_list = File.readlines '5desk.txt'
 
     @word = choose_word(word_list).downcase
-    puts @word
     @player_work = convert_to_blank_char_array(@word)
     @chars_guessed = []
     @guesses_left = 6
     @game_finished = false
   end
 
+  def to_json
+    hash = {}
+    self.instance_variables.each do |var|
+      hash[var] = self.instance_variable_get var
+    end
+    hash.to_json
+  end
+
+  def from_json(string)
+    data = JSON.parse(string)
+    @word = data['@word']
+    @player_work = data['@player_work']
+    @chars_guessed = data['@chars_guessed']
+    @guesses_left = data['@guesses_left']
+  end
+
+  def save_game
+    File.open("save_game.json", "w") do |file|
+      file.puts to_json
+    end
+  end
+
+  def load_game
+    from_json File.read("save_game.json")
+  end
+
   # Choose a word randomly from a list, 5-12 chars long
   def choose_word(word_list)
     acceptable_words = word_list.select{ |word| word.length > 4 && word.length < 13 }
-    word = acceptable_words[Random.rand(acceptable_words.length)]
+    word = acceptable_words[Random.rand(acceptable_words.length)].strip
   end
 
   # Converts a string into an array of '_' chars
@@ -101,6 +128,9 @@ class Hangman
 
   # Call this to start the game logic
   def start_game
+    start_from_file = get_response_for("Load game? (y/n)").downcase
+    load_game if start_from_file ==  "y"
+
     until @game_finished do
       display_work
 
@@ -113,6 +143,8 @@ class Hangman
       char_exists ? update_work(guess) : @guesses_left -= 1
 
       @game_finished = check_if_game_over
+
+      save_game
     end
   end
 end
