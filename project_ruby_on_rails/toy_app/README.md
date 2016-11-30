@@ -1,24 +1,9 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Project from Chapter 2 of [The Ruby on Rails Tutorial](https://www.railstutorial.org/book/toy_app)
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Covers
+* Basic scaffolding in Rails
+* MVC pattern for structuring web applications
+* RESTful architecture
+* Basic data validation within model attributes
